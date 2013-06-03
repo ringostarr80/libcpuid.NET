@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace libcpuid {
@@ -123,133 +125,398 @@ namespace libcpuid {
 		public UInt16 ProcessorType;
 		public UInt16 ExtendedModel;
 		public UInt16 ExtendedFamily;
+		public UInt32 Raw;
 	}
 
-	public struct FeatureBits {
+	public class FeatureBits : IEnumerable {
 		// ecx Register
-		public bool PrescottNewInstructions;
-		public bool PCLMULQDQ;
-		public bool DebugStore64Bit;
-		public bool MONITORAndMWAITInstructions;
-		public bool CPLQualifiedDebugStore;
-		public bool VirtualMachineExtensions;
-		public bool SaferModeExtensions;
-		public bool EnhancedSpeedStep;
-		public bool ThermalMonitor2;
-		public bool SupplementalSSE3Instructions;
-		public bool ContextID;
-		public bool FusedMultiplyAdd;
-		public bool CMPXCHG16BInstruction;
-		public bool CanDisableSendingTaskPriorityMessages;
-		public bool PerfmonAndDebugCapability;
-		public bool ProcessContextIdentifiers;
-		public bool DirectCacheAccessForDMAWrites;
-		public bool SSE4_1Instructions;
-		public bool SSE4_2Instructions;
-		public bool x2APICSupport;
-		public bool MOVBEInstruction;
-		public bool POPCNTInstruction;
-		public bool TSCDeadlineSupport;
-		public bool AESInstructionSet;
-		public bool XSAVE_XRESTOR_XSETBV_XGETBV_Support;
-		public bool XSAVEEnabledByOS;
-		public bool AdvancedVectorExtensions;
-		public bool CVT16InstructionSet;
-		public bool RDRANDSupport;
-		public bool RunningOnAHypervisor;
+		[FeatureBit("PNI", "Prescott New Instructions (SSE3)")]
+		public bool
+			PrescottNewInstructions;
+		[FeatureBit("PCLMULQDQ", " PCLMULQDQ support")]
+		public bool
+			PCLMULQDQ;
+		[FeatureBit("DTES64", "64-bit debug store")]
+		public bool
+			DebugStore64Bit;
+		[FeatureBit("monitor", "MONITOR and MWAIT instructions")]
+		public bool
+			MONITORAndMWAITInstructions;
+		[FeatureBit("DS_CPL", "CPL qualified debug store")]
+		public bool
+			CPLQualifiedDebugStore;
+		[FeatureBit("VMX", "Virtual Machine eXtensions")]
+		public bool
+			VirtualMachineExtensions;
+		[FeatureBit("SMX", "Safer Mode Extensions (LaGrande)")]
+		public bool
+			SaferModeExtensions;
+		[FeatureBit("EST", "Enhanced SpeedStep")]
+		public bool
+			EnhancedSpeedStep;
+		[FeatureBit("TM2", "Thermal Monitor 2")]
+		public bool
+			ThermalMonitor2;
+		[FeatureBit("SSSE3", "Supplemental SSE3 instructions")]
+		public bool
+			SupplementalSSE3Instructions;
+		[FeatureBit("CID", "Context ID")]
+		public bool
+			ContextID;
+		[FeatureBit("FMA", "Fused multiply-add (FMA3)")]
+		public bool
+			FusedMultiplyAdd;
+		[FeatureBit("CX16", "CMPXCHG16B Instruction")]
+		public bool
+			CMPXCHG16BInstruction;
+		[FeatureBit("XTPR", "Can disable sending task priority messages")]
+		public bool
+			CanDisableSendingTaskPriorityMessages;
+		[FeatureBit("PDCM", "Perfmon & debug capability")]
+		public bool
+			PerfmonAndDebugCapability;
+		[FeatureBit("PCID", "Process context identifiers (CR4 bit 17)")]
+		public bool
+			ProcessContextIdentifiers;
+		[FeatureBit("DCA", "Direct cache access for DMA writes")]
+		public bool
+			DirectCacheAccessForDMAWrites;
+		[FeatureBit("SSE4_1", "SSE4.1 instructions")]
+		public bool
+			SSE4_1Instructions;
+		[FeatureBit("SSE4_2", "SSE4.2 instructions")]
+		public bool
+			SSE4_2Instructions;
+		[FeatureBit("X2APIC", "x2APIC support")]
+		public bool
+			x2APICSupport;
+		[FeatureBit("movbe", "MOVBE instruction (big-endian, Intel Atom only)")]
+		public bool
+			MOVBEInstruction;
+		[FeatureBit("POPCNT", "POPCNT instruction")]
+		public bool
+			POPCNTInstruction;
+		[FeatureBit("TSCDEADLINE", "APIC supports one-shot operation using a TSC deadline value")]
+		public bool
+			TSCDeadlineSupport;
+		[FeatureBit("AES", "AES instruction set")]
+		public bool
+			AESInstructionSet;
+		[FeatureBit("XSAVE", "XSAVE, XRESTOR, XSETBV, XGETBV")]
+		public bool
+			XSAVE_XRESTOR_XSETBV_XGETBV_Support;
+		[FeatureBit("OSXSAVE", "XSAVE enabled by OS")]
+		public bool
+			XSAVEEnabledByOS;
+		[FeatureBit("AVX", "Advanced Vector Extensions")]
+		public bool
+			AdvancedVectorExtensions;
+		[FeatureBit("F16C", "CVT16 instruction set (half-precision) FP support")]
+		public bool
+			CVT16InstructionSet;
+		[FeatureBit("RDRND", "RDRAND (on-chip random number generator) support")]
+		public bool
+			RDRANDSupport;
+		[FeatureBit("hypervisor", "Running on a hypervisor (always 0 on a real CPU, but also with some hypervisors)")]
+		public bool
+			RunningOnAHypervisor;
 
 		// edx Register
-		public bool Onboardx87FPU;
-		public bool VirtualModeExtensions;
-		public bool DebuggingExtensions;
-		public bool PageSizeExtension;
-		public bool TimeStampCounter;
-		public bool ModelSpecificRegisters;
-		public bool PhysicalAddressExtension;
-		public bool MachineCheckException;
-		public bool CMPXCHG8Instruction;
-		public bool OnboardAPIC;
-		public bool SYSENTERAndSYSEXITInstructions;
-		public bool MemoryTypeRangeRegisters;
-		public bool PageGlobalEnableBitInCR4;
-		public bool MachineCheckArchitecture;
-		public bool ConditionalMoveAndFCMOVInstructions;
-		public bool PageAttributeTable;
-		public bool PageSizeExtension36Bit;
-		public bool ProcessorSerialNumber;
-		public bool CLFLUSHInstruction;
-		public bool DebugStore;
-		public bool OnboardThermalControlMSRsForACPI;
-		public bool MMXInstructions;
-		public bool FXSAVE_FXRESTOR_Instructions;
-		public bool SSEInstructions;
-		public bool SSE2Instructions;
-		public bool CPUCacheSupportsSelfSnoop;
-		public bool HyperThreading;
-		public bool ThermalMonitorAuomaticallyLimitsTemperature;
-		public bool IA64ProcessorEmulatingx86;
-		public bool PendingBreakEnableWakeupSupport;
+		[FeatureBit("FPU", "Onboard x87 FPU")]
+		public bool
+			Onboardx87FPU;
+		[FeatureBit("VME", "Virtual mode extensions (VIF)")]
+		public bool
+			VirtualModeExtensions;
+		[FeatureBit("de", "Debugging extensions (CR4 bit 3)")]
+		public bool
+			DebuggingExtensions;
+		[FeatureBit("PSE", "Page Size Extension")]
+		public bool
+			PageSizeExtension;
+		[FeatureBit("TSC", "Time Stamp Counter")]
+		public bool
+			TimeStampCounter;
+		[FeatureBit("MSR", "Model-specific registers")]
+		public bool
+			ModelSpecificRegisters;
+		[FeatureBit("PAE", "Physical Address Extension")]
+		public bool
+			PhysicalAddressExtension;
+		[FeatureBit("MCE", "Machine Check Exception")]
+		public bool
+			MachineCheckException;
+		[FeatureBit("CX8", "CMPXCHG8 (compare-and-swap) instruction")]
+		public bool
+			CMPXCHG8Instruction;
+		[FeatureBit("APIC", "Onboard Advanced Programmable Interrupt Controller")]
+		public bool
+			OnboardAPIC;
+		[FeatureBit("SEP", "SYSENTER and SYSEXIT instructions")]
+		public bool
+			SYSENTERAndSYSEXITInstructions;
+		[FeatureBit("MTRR", "Memory Type Range Registers")]
+		public bool
+			MemoryTypeRangeRegisters;
+		[FeatureBit("PGE", "Page Global Enable bit in CR4")]
+		public bool
+			PageGlobalEnableBitInCR4;
+		[FeatureBit("MCA", "Machine check architecture")]
+		public bool
+			MachineCheckArchitecture;
+		[FeatureBit("CMOV", "Conditional move and FCMOV instructions")]
+		public bool
+			ConditionalMoveAndFCMOVInstructions;
+		[FeatureBit("PAT", "Page Attribute Table")]
+		public bool
+			PageAttributeTable;
+		[FeatureBit("PSE36", "36-bit page size extension")]
+		public bool
+			PageSizeExtension36Bit;
+		[FeatureBit("PN", "Processor Serial number")]
+		public bool
+			ProcessorSerialNumber;
+		[FeatureBit("CLFLUSH", "CLFLUSH instruction (SSE2)")]
+		public bool
+			CLFLUSHInstruction;
+		[FeatureBit("DTS", "Debug store: save trace of executed jumps")]
+		public bool
+			DebugStore;
+		[FeatureBit("ACPI", "Onboard thermal control MSRs for ACPI")]
+		public bool
+			OnboardThermalControlMSRsForACPI;
+		[FeatureBit("MMX", "MMX instructions")]
+		public bool
+			MMXInstructions;
+		[FeatureBit("FXSR", "FXSAVE, FXRESTOR instructions, CR4 bit 9")]
+		public bool
+			FXSAVE_FXRESTOR_Instructions;
+		[FeatureBit("SSE", "SSE instructions (a.k.a. Katmai New Instructions)")]
+		public bool
+			SSEInstructions;
+		[FeatureBit("SSE2", "SSE2 instructions")]
+		public bool
+			SSE2Instructions;
+		[FeatureBit("SS", "CPU cache supports self-snoop")]
+		public bool
+			CPUCacheSupportsSelfSnoop;
+		[FeatureBit("ht", "Hyper-threading")]
+		public bool
+			HyperThreading;
+		[FeatureBit("TM", "Thermal montitor automatically limits temperature")]
+		public bool
+			ThermalMonitorAuomaticallyLimitsTemperature;
+		[FeatureBit("IA64", "IA64 processor emulating x86")]
+		public bool
+			IA64ProcessorEmulatingx86;
+		[FeatureBit("PBE", "Pending Break Enable (PBE# pin) wakeup support")]
+		public bool
+			PendingBreakEnableWakeupSupport;
 
 		// extended features
 
 		// ecx Register
-		public bool LAHF_SAHF_InLongMode;
-		public bool HyperThreadingNotValid;
-		public bool SecureVirtualMachine;
-		public bool ExtendedAPICSpace;
-		public bool CR8In32BitMode;
-		public bool AdvancedBitManipulation;
-		public bool SSE4a;
-		public bool MisalignedSSEMode;
-		public bool PREFETCHAndPREFETCHWInstructions;
-		public bool OSVisibleWorkaround;
-		public bool InstructionBasedSampling;
-		public bool XOPInstructionSet;
-		public bool SKINIT_STGI_Instructions;
-		public bool WatchdogTimer;
-		public bool LightweightProfiling;
-		public bool FourOperandsFusedMultiplyAdd;
-		public bool TranslationCacheExtension;
-		public bool NodeID_MSR;
-		public bool TrailingBitManipulation;
-		public bool TopologyExtensions;
-		public bool CorePerformanceCounterExtensions;
-		public bool NBPerformanceCounterExtensions;
+		[FeatureBit("LAHF_LM", "LAHF/SAHF in long mode")]
+		public bool
+			LAHF_SAHF_InLongMode;
+		[FeatureBit("CMP_LEGACY", "Hyperthreading not valid")]
+		public bool
+			HyperThreadingNotValid;
+		[FeatureBit("SVM", "Secure Virtual Machine")]
+		public bool
+			SecureVirtualMachine;
+		[FeatureBit("EXTAPIC", "Extended APIC space")]
+		public bool
+			ExtendedAPICSpace;
+		[FeatureBit("CR8_LEGACY", "CR8 in 32-bit mode")]
+		public bool
+			CR8In32BitMode;
+		[FeatureBit("ABM", "Advanced bit manipulation (lzcnt and popcnt)")]
+		public bool
+			AdvancedBitManipulation;
+		[FeatureBit("SSE4A", "SSE4a")]
+		public bool
+			SSE4a;
+		[FeatureBit("MISALIGNSSE", "Misaligned SSE mode")]
+		public bool
+			MisalignedSSEMode;
+		[FeatureBit("3DNOWPREFETCH", "PREFETCH nad PREFETCHW instructions")]
+		public bool
+			PREFETCHAndPREFETCHWInstructions;
+		[FeatureBit("OSVW", "OS Visible Workaround")]
+		public bool
+			OSVisibleWorkaround;
+		[FeatureBit("IBS", "Instruction Based Sampling")]
+		public bool
+			InstructionBasedSampling;
+		[FeatureBit("XOP", "XOP instruction set")]
+		public bool
+			XOPInstructionSet;
+		[FeatureBit("SKINIT", "SKINIT/STGI instructions")]
+		public bool
+			SKINIT_STGI_Instructions;
+		[FeatureBit("WDT", "Watchdog timer")]
+		public bool
+			WatchdogTimer;
+		[FeatureBit("LWP", "Light Weight Profiling")]
+		public bool
+			LightweightProfiling;
+		[FeatureBit("FMA4", "4 operands fused multiply-add")]
+		public bool
+			FourOperandsFusedMultiplyAdd;
+		[FeatureBit("TCE", "Translation Cache Extension")]
+		public bool
+			TranslationCacheExtension;
+		[FeatureBit("NODEID_MSR", "NodeId MSR")]
+		public bool
+			NodeID_MSR;
+		[FeatureBit("TBM", "Trailing Bit Manipulation")]
+		public bool
+			TrailingBitManipulation;
+		[FeatureBit("TOPOEXT", "Topology Extensions")]
+		public bool
+			TopologyExtensions;
+		[FeatureBit("PERFCTR_CORE", "Core performance counter extensions")]
+		public bool
+			CorePerformanceCounterExtensions;
+		[FeatureBit("PERFCTR_NB", "NB performance counter extensions")]
+		public bool
+			NBPerformanceCounterExtensions;
 
 		// edx Register
-		public bool SYSCALLAndSYSRETInstructions;
-		public bool MultiprocessorCapable;
-		public bool NXBit;
-		public bool ExtendedMMX;
-		public bool FXSAVE_FXRSTOR_Instructions;
-		public bool FXSAVE_FXRSTOR_Optimizations;
-		public bool GibibytePages;
-		public bool RDTSCPInstruction;
-		public bool LongMode;
-		public bool Extended3DNow;
-		public bool AMD3DNow;
+		[FeatureBit("SYSCALL", "SYSCALL and SYSRET instructions")]
+		public bool
+			SYSCALLAndSYSRETInstructions;
+		[FeatureBit("MP", "Multiprocessor Capable")]
+		public bool
+			MultiprocessorCapable;
+		[FeatureBit("NX", "NX bit")]
+		public bool
+			NXBit;
+		[FeatureBit("MMXEXT", "Extended MMX")]
+		public bool
+			ExtendedMMX;
+		[FeatureBit("FXSR", "FXSAVE, FXRSTOR instructions, CR4 bit 9")]
+		public bool
+			FXSAVE_FXRSTOR_Instructions;
+		[FeatureBit("FXSR_OPT", "FXSAVE/FXRSTOR optimizations")]
+		public bool
+			FXSAVE_FXRSTOR_Optimizations;
+		[FeatureBit("PDPE1GB", "Gibibyte pages")]
+		public bool
+			GibibytePages;
+		[FeatureBit("RDTSCP", "RDTSCP instruction")]
+		public bool
+			RDTSCPInstruction;
+		[FeatureBit("LM", "Long mode")]
+		public bool
+			LongMode;
+		[FeatureBit("3DNOWEXT", "Extended 3DNow!")]
+		public bool
+			Extended3DNow;
+		[FeatureBit("3DNow", "3DNow!")]
+		public bool
+			AMD3DNow;
+
+		public IEnumerator GetEnumerator() {
+			FieldInfo[] infos = this.GetType().GetFields();
+
+			ArrayList list = new ArrayList();
+			foreach(FieldInfo info in infos) {
+				bool featureBitAttributeFound = false;
+				object[] attributes = info.GetCustomAttributes(false);
+				foreach(var attribute in attributes) {
+					if (attribute.GetType().Name == "FeatureBitAttribute") {
+						featureBitAttributeFound = true;
+						FeatureBitAttribute featureBitAttribute = (FeatureBitAttribute)attribute;
+						list.Add(new FeatureBitObject(info.Name, (bool)info.GetValue(this), featureBitAttribute.Abbreviation, featureBitAttribute.LongName));
+					}
+				}
+				if (!featureBitAttributeFound) {
+					list.Add(new FeatureBitObject(info.Name, (bool)info.GetValue(this)));
+				}
+			}
+
+			return list.GetEnumerator();
+		}
+	}
+
+	public struct FeatureBitObject {
+		private string _name;
+		private bool _value;
+		private string _abbreviation;
+		private string _longName;
+
+		public string Name { get { return this._name; } }
+		public bool Value { get { return this._value; } }
+		public string Abbreviation { get { return this._abbreviation; } }
+		public string LongName { get { return this._longName; } }
+
+		public FeatureBitObject(string name, bool value) {
+			this._name = name;
+			this._value = value;
+			this._abbreviation = String.Empty;
+			this._longName = String.Empty;
+		}
+
+		public FeatureBitObject(string name, bool value, string abbreviation, string longName) {
+			this._name = name;
+			this._value = value;
+			this._abbreviation = abbreviation;
+			this._longName = longName;
+		}
 	}
 
 	public class LibCpuId {
+		private Dictionary<UInt32, CpuRegisters> _rawData = new Dictionary<UInt32, CpuRegisters>();
+		private uint _cpuidLevel = 0;
 		private string _vendorId = String.Empty;
 		private string _processorBrandString = String.Empty;
 		private FeatureBits _featureBits;
 		private ProcessorInfo _processorInfo;
 
+		public Dictionary<UInt32, CpuRegisters> RawData { get { return this._rawData; } }
+		public uint CpuIdLevel { get { return this._cpuidLevel; } }
 		public string VendorId { get { return this._vendorId; } }
 		public string ProcessorBrandString { get { return this._processorBrandString; } }
 		public FeatureBits FeatureBits { get { return this._featureBits; } }
 		public ProcessorInfo ProcessorInfo { get { return this._processorInfo; } }
 
 		public LibCpuId() {
+			this.FillRawData();
 			this.DetectVendorId();
 			this.DetectProcessorInfoAndFeatureBits();
 			this.DetectExtendedProcessorInfoAndFeatureBits();
 			this.DetectProcessorBrandString();
 		}
 
+		private void FillRawData() {
+			CpuRegisters regs = cpuid(0);
+			this._rawData.Add(0, regs);
+			uint highestInput = regs.eax;
+
+			for(uint i = 1; i <= highestInput; i++) {
+				regs = cpuid(i);
+				this._rawData.Add(i, regs);
+			}
+
+			// extended
+			regs = cpuid(0x80000000);
+			uint highestExtendedInput = regs.eax;
+			if (highestExtendedInput > 0x80000000) {
+				this._rawData.Add(0x80000000, regs);
+
+				for(uint i = 0x80000001; i <= highestExtendedInput; i++) {
+					regs = cpuid(i);
+					this._rawData.Add(i, regs);
+				}
+			}
+		}
+
 		private void DetectVendorId() {
 			CpuRegisters regs = cpuid(0);
+
+			this._cpuidLevel = regs.eax;
 
 			char[] vendorID = new char[12];
 			vendorID[0] = (char)((regs.ebx) & 0xFF);
@@ -277,6 +544,7 @@ namespace libcpuid {
 			this._processorInfo.ProcessorType = (UInt16)((regs.eax >> 12) & 0x03);
 			this._processorInfo.ExtendedModel = (UInt16)((regs.eax >> 16) & 0x0F);
 			this._processorInfo.ExtendedFamily = (UInt16)((regs.eax >> 20) & 0xFF);
+			this._processorInfo.Raw = regs.eax;
 
 			this._featureBits = new FeatureBits();
 			this._featureBits.PrescottNewInstructions = ((regs.ecx & 0x01) > 0);

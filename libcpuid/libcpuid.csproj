@@ -39,6 +39,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="CpuIdTest.cs" />
     <Compile Include="LibCpuId.cs" />
+    <Compile Include="FeatureBitAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
