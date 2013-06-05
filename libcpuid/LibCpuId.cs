@@ -128,7 +128,7 @@ namespace libcpuid {
 		public UInt32 Raw;
 	}
 
-	public class FeatureBits : IEnumerable {
+	public struct FeatureBits : IEnumerable {
 		// ecx Register
 		[FeatureBit("PNI", "Prescott New Instructions (SSE3)")]
 		public bool
@@ -492,6 +492,7 @@ namespace libcpuid {
 
 		private void FillRawData() {
 			CpuRegisters regs = cpuid(0);
+			this._cpuidLevel = regs.eax;
 			this._rawData.Add(0, regs);
 			uint highestInput = regs.eax;
 
@@ -515,8 +516,6 @@ namespace libcpuid {
 
 		private void DetectVendorId() {
 			CpuRegisters regs = cpuid(0);
-
-			this._cpuidLevel = regs.eax;
 
 			char[] vendorID = new char[12];
 			vendorID[0] = (char)((regs.ebx) & 0xFF);
