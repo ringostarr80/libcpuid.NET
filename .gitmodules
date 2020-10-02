@@ -1,0 +1,3 @@
+[submodule "libcpuid"]
+	path = libcpuid
+	url = git@github.com:ringostarr80/libcpuid.git

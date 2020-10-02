@@ -1,2 +1,2 @@
-libcpuid.NET
+LibCpuId.NET
 ============
