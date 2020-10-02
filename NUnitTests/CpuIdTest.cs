@@ -1,13 +1,13 @@
 using System;
 using NUnit.Framework;
-using libcpuid;
+using LibCpuId;
 
-namespace libcpuid {
+namespace LibCpuId {
 	[TestFixture()]
 	public class CpuIdTest {
 		[Test()]
 		public void CpuIdTestCase() {
-			LibCpuId libCpuId = new LibCpuId();
+			var libCpuId = new LibCpuId();
 			Assert.IsNotEmpty(libCpuId.VendorId);
 			Assert.IsNotEmpty(libCpuId.ProcessorBrandString);
 		}

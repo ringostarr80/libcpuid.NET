@@ -1,6 +1,6 @@
 using System;
 
-namespace libcpuid {
+namespace LibCpuId {
 	[AttributeUsage(AttributeTargets.All)]
 	public class FeatureBitAttribute : Attribute {
 		private string _abbreviation = String.Empty;

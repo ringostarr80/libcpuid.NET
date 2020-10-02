@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace libcpuid {
+namespace LibCpuId {
 	public enum FeatureBit {
 		// ecx Register
 		PrescottNewInstructions,
