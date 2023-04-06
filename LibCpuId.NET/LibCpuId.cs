@@ -421,7 +421,7 @@ namespace LibCpuId {
 		public IEnumerator GetEnumerator() {
 			FieldInfo[] infos = this.GetType().GetFields();
 
-			ArrayList list = new ArrayList();
+			ArrayList list = new();
 			foreach(FieldInfo info in infos) {
 				bool featureBitAttributeFound = false;
 				object[] attributes = info.GetCustomAttributes(false);
@@ -441,11 +441,11 @@ namespace LibCpuId {
 		}
 	}
 
-	public struct FeatureBitObject {
-		private string _name;
-		private bool _value;
-		private string _abbreviation;
-		private string _longName;
+	public readonly struct FeatureBitObject {
+		private readonly string _name;
+		private readonly bool _value;
+		private readonly string _abbreviation;
+		private readonly string _longName;
 
 		public string Name { get { return this._name; } }
 		public bool Value { get { return this._value; } }
@@ -468,7 +468,7 @@ namespace LibCpuId {
 	}
 
 	public class LibCpuId {
-		private Dictionary<UInt32, CpuRegisters> _rawData = new Dictionary<UInt32, CpuRegisters>();
+		private readonly Dictionary<UInt32, CpuRegisters> _rawData = new();
 		private uint _cpuidLevel = 0;
 		private string _vendorId = String.Empty;
 		private string _processorBrandString = String.Empty;
@@ -536,82 +536,86 @@ namespace LibCpuId {
 		private void DetectProcessorInfoAndFeatureBits() {
 			CpuRegisters regs = cpuid(1);
 
-			this._processorInfo = new ProcessorInfo();
-			this._processorInfo.Stepping = (UInt16)((regs.eax) & 0x0F);
-			this._processorInfo.Model = (UInt16)((regs.eax >> 4) & 0x0F);
-			this._processorInfo.Family = (UInt16)((regs.eax >> 8) & 0x0F);
-			this._processorInfo.ProcessorType = (UInt16)((regs.eax >> 12) & 0x03);
-			this._processorInfo.ExtendedModel = (UInt16)((regs.eax >> 16) & 0x0F);
-			this._processorInfo.ExtendedFamily = (UInt16)((regs.eax >> 20) & 0xFF);
-			this._processorInfo.Raw = regs.eax;
+            this._processorInfo = new ProcessorInfo
+            {
+                Stepping = (UInt16)((regs.eax) & 0x0F),
+                Model = (UInt16)((regs.eax >> 4) & 0x0F),
+                Family = (UInt16)((regs.eax >> 8) & 0x0F),
+                ProcessorType = (UInt16)((regs.eax >> 12) & 0x03),
+                ExtendedModel = (UInt16)((regs.eax >> 16) & 0x0F),
+                ExtendedFamily = (UInt16)((regs.eax >> 20) & 0xFF),
+                Raw = regs.eax
+            };
 
-			this._featureBits = new FeatureBits();
-			this._featureBits.PrescottNewInstructions = ((regs.ecx & 0x01) > 0);
-			this._featureBits.PCLMULQDQ = ((regs.ecx & 0x02) > 0);
-			this._featureBits.DebugStore64Bit = ((regs.ecx & 0x04) > 0);
-			this._featureBits.MONITORAndMWAITInstructions = ((regs.ecx & 0x08) > 0);
-			this._featureBits.CPLQualifiedDebugStore = ((regs.ecx & 0x10) > 0);
-			this._featureBits.VirtualMachineExtensions = ((regs.ecx & 0x20) > 0);
-			this._featureBits.SaferModeExtensions = ((regs.ecx & 0x40) > 0);
-			this._featureBits.EnhancedSpeedStep = ((regs.ecx & 0x80) > 0);
-			this._featureBits.ThermalMonitor2 = ((regs.ecx & 0x100) > 0);
-			this._featureBits.SupplementalSSE3Instructions = ((regs.ecx & 0x200) > 0);
-			this._featureBits.ContextID = ((regs.ecx & 0x400) > 0);
+            this._featureBits = new FeatureBits
+            {
+                PrescottNewInstructions = ((regs.ecx & 0x01) > 0),
+                PCLMULQDQ = ((regs.ecx & 0x02) > 0),
+                DebugStore64Bit = ((regs.ecx & 0x04) > 0),
+                MONITORAndMWAITInstructions = ((regs.ecx & 0x08) > 0),
+                CPLQualifiedDebugStore = ((regs.ecx & 0x10) > 0),
+                VirtualMachineExtensions = ((regs.ecx & 0x20) > 0),
+                SaferModeExtensions = ((regs.ecx & 0x40) > 0),
+                EnhancedSpeedStep = ((regs.ecx & 0x80) > 0),
+                ThermalMonitor2 = ((regs.ecx & 0x100) > 0),
+                SupplementalSSE3Instructions = ((regs.ecx & 0x200) > 0),
+                ContextID = ((regs.ecx & 0x400) > 0),
 
-			this._featureBits.FusedMultiplyAdd = ((regs.ecx & 0x1000) > 0);
-			this._featureBits.CMPXCHG16BInstruction = ((regs.ecx & 0x2000) > 0);
-			this._featureBits.CanDisableSendingTaskPriorityMessages = ((regs.ecx & 0x4000) > 0);
-			this._featureBits.PerfmonAndDebugCapability = ((regs.ecx & 0x8000) > 0);
+                FusedMultiplyAdd = ((regs.ecx & 0x1000) > 0),
+                CMPXCHG16BInstruction = ((regs.ecx & 0x2000) > 0),
+                CanDisableSendingTaskPriorityMessages = ((regs.ecx & 0x4000) > 0),
+                PerfmonAndDebugCapability = ((regs.ecx & 0x8000) > 0),
 
-			this._featureBits.ProcessContextIdentifiers = ((regs.ecx & 0x20000) > 0);
-			this._featureBits.DirectCacheAccessForDMAWrites = ((regs.ecx & 0x40000) > 0);
-			this._featureBits.SSE4_1Instructions = ((regs.ecx & 0x80000) > 0);
-			this._featureBits.SSE4_2Instructions = ((regs.ecx & 0x100000) > 0);
-			this._featureBits.x2APICSupport = ((regs.ecx & 0x200000) > 0);
-			this._featureBits.MOVBEInstruction = ((regs.ecx & 0x400000) > 0);
-			this._featureBits.POPCNTInstruction = ((regs.ecx & 0x800000) > 0);
-			this._featureBits.TSCDeadlineSupport = ((regs.ecx & 0x1000000) > 0);
-			this._featureBits.AESInstructionSet = ((regs.ecx & 0x2000000) > 0);
-			this._featureBits.XSAVE_XRESTOR_XSETBV_XGETBV_Support = ((regs.ecx & 0x4000000) > 0);
-			this._featureBits.XSAVEEnabledByOS = ((regs.ecx & 0x8000000) > 0);
-			this._featureBits.AdvancedVectorExtensions = ((regs.ecx & 0x10000000) > 0);
-			this._featureBits.CVT16InstructionSet = ((regs.ecx & 0x20000000) > 0);
-			this._featureBits.RDRANDSupport = ((regs.ecx & 0x40000000) > 0);
-			this._featureBits.RunningOnAHypervisor = ((regs.ecx & 0x80000000) > 0);
+                ProcessContextIdentifiers = ((regs.ecx & 0x20000) > 0),
+                DirectCacheAccessForDMAWrites = ((regs.ecx & 0x40000) > 0),
+                SSE4_1Instructions = ((regs.ecx & 0x80000) > 0),
+                SSE4_2Instructions = ((regs.ecx & 0x100000) > 0),
+                x2APICSupport = ((regs.ecx & 0x200000) > 0),
+                MOVBEInstruction = ((regs.ecx & 0x400000) > 0),
+                POPCNTInstruction = ((regs.ecx & 0x800000) > 0),
+                TSCDeadlineSupport = ((regs.ecx & 0x1000000) > 0),
+                AESInstructionSet = ((regs.ecx & 0x2000000) > 0),
+                XSAVE_XRESTOR_XSETBV_XGETBV_Support = ((regs.ecx & 0x4000000) > 0),
+                XSAVEEnabledByOS = ((regs.ecx & 0x8000000) > 0),
+                AdvancedVectorExtensions = ((regs.ecx & 0x10000000) > 0),
+                CVT16InstructionSet = ((regs.ecx & 0x20000000) > 0),
+                RDRANDSupport = ((regs.ecx & 0x40000000) > 0),
+                RunningOnAHypervisor = ((regs.ecx & 0x80000000) > 0),
 
-			this._featureBits.Onboardx87FPU = ((regs.edx & 0x01) > 0);
-			this._featureBits.VirtualModeExtensions = ((regs.edx & 0x02) > 0);
-			this._featureBits.DebuggingExtensions = ((regs.edx & 0x04) > 0);
-			this._featureBits.PageSizeExtension = ((regs.edx & 0x08) > 0);
-			this._featureBits.TimeStampCounter = ((regs.edx & 0x10) > 0);
-			this._featureBits.ModelSpecificRegisters = ((regs.edx & 0x20) > 0);
-			this._featureBits.PhysicalAddressExtension = ((regs.edx & 0x40) > 0);
-			this._featureBits.MachineCheckException = ((regs.edx & 0x80) > 0);
-			this._featureBits.CMPXCHG8Instruction = ((regs.edx & 0x100) > 0);
-			this._featureBits.OnboardAPIC = ((regs.edx & 0x200) > 0);
+                Onboardx87FPU = ((regs.edx & 0x01) > 0),
+                VirtualModeExtensions = ((regs.edx & 0x02) > 0),
+                DebuggingExtensions = ((regs.edx & 0x04) > 0),
+                PageSizeExtension = ((regs.edx & 0x08) > 0),
+                TimeStampCounter = ((regs.edx & 0x10) > 0),
+                ModelSpecificRegisters = ((regs.edx & 0x20) > 0),
+                PhysicalAddressExtension = ((regs.edx & 0x40) > 0),
+                MachineCheckException = ((regs.edx & 0x80) > 0),
+                CMPXCHG8Instruction = ((regs.edx & 0x100) > 0),
+                OnboardAPIC = ((regs.edx & 0x200) > 0),
 
-			this._featureBits.SYSENTERAndSYSEXITInstructions = ((regs.edx & 0x800) > 0);
-			this._featureBits.MemoryTypeRangeRegisters = ((regs.edx & 0x1000) > 0);
-			this._featureBits.PageGlobalEnableBitInCR4 = ((regs.edx & 0x2000) > 0);
-			this._featureBits.MachineCheckArchitecture = ((regs.edx & 0x4000) > 0);
-			this._featureBits.ConditionalMoveAndFCMOVInstructions = ((regs.edx & 0x8000) > 0);
-			this._featureBits.PageAttributeTable = ((regs.edx & 0x10000) > 0);
-			this._featureBits.PageSizeExtension36Bit = ((regs.edx & 0x20000) > 0);
-			this._featureBits.ProcessorSerialNumber = ((regs.edx & 0x40000) > 0);
-			this._featureBits.CLFLUSHInstruction = ((regs.edx & 0x80000) > 0);
+                SYSENTERAndSYSEXITInstructions = ((regs.edx & 0x800) > 0),
+                MemoryTypeRangeRegisters = ((regs.edx & 0x1000) > 0),
+                PageGlobalEnableBitInCR4 = ((regs.edx & 0x2000) > 0),
+                MachineCheckArchitecture = ((regs.edx & 0x4000) > 0),
+                ConditionalMoveAndFCMOVInstructions = ((regs.edx & 0x8000) > 0),
+                PageAttributeTable = ((regs.edx & 0x10000) > 0),
+                PageSizeExtension36Bit = ((regs.edx & 0x20000) > 0),
+                ProcessorSerialNumber = ((regs.edx & 0x40000) > 0),
+                CLFLUSHInstruction = ((regs.edx & 0x80000) > 0),
 
-			this._featureBits.DebugStore = ((regs.edx & 0x200000) > 0);
-			this._featureBits.OnboardThermalControlMSRsForACPI = ((regs.edx & 0x400000) > 0);
-			this._featureBits.MMXInstructions = ((regs.edx & 0x800000) > 0);
-			this._featureBits.FXSAVE_FXRESTOR_Instructions = ((regs.edx & 0x1000000) > 0);
-			this._featureBits.SSEInstructions = ((regs.edx & 0x2000000) > 0);
-			this._featureBits.SSE2Instructions = ((regs.edx & 0x4000000) > 0);
-			this._featureBits.CPUCacheSupportsSelfSnoop = ((regs.edx & 0x8000000) > 0);
-			this._featureBits.HyperThreading = ((regs.edx & 0x10000000) > 0);
-			this._featureBits.ThermalMonitorAuomaticallyLimitsTemperature = ((regs.edx & 0x20000000) > 0);
-			this._featureBits.IA64ProcessorEmulatingx86 = ((regs.edx & 0x40000000) > 0);
-			this._featureBits.PendingBreakEnableWakeupSupport = ((regs.edx & 0x80000000) > 0);
-		}
+                DebugStore = ((regs.edx & 0x200000) > 0),
+                OnboardThermalControlMSRsForACPI = ((regs.edx & 0x400000) > 0),
+                MMXInstructions = ((regs.edx & 0x800000) > 0),
+                FXSAVE_FXRESTOR_Instructions = ((regs.edx & 0x1000000) > 0),
+                SSEInstructions = ((regs.edx & 0x2000000) > 0),
+                SSE2Instructions = ((regs.edx & 0x4000000) > 0),
+                CPUCacheSupportsSelfSnoop = ((regs.edx & 0x8000000) > 0),
+                HyperThreading = ((regs.edx & 0x10000000) > 0),
+                ThermalMonitorAuomaticallyLimitsTemperature = ((regs.edx & 0x20000000) > 0),
+                IA64ProcessorEmulatingx86 = ((regs.edx & 0x40000000) > 0),
+                PendingBreakEnableWakeupSupport = ((regs.edx & 0x80000000) > 0)
+            };
+        }
 
 		private void DetectExtendedProcessorInfoAndFeatureBits() {
 			CpuRegisters regs = cpuid(0x80000001);

@@ -3,7 +3,7 @@ using LibCpuId;
 
 namespace CpuId {
 	class MainClass {
-		public static void Main(string[] args) {
+		public static void Main() {
 			var libCpuId = new LibCpuId.LibCpuId();
 
 			Console.WriteLine(" eax in    eax      ebx      ecx      edx");

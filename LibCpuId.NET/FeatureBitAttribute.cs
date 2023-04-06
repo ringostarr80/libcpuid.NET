@@ -3,8 +3,8 @@ using System;
 namespace LibCpuId {
 	[AttributeUsage(AttributeTargets.All)]
 	public class FeatureBitAttribute : Attribute {
-		private string _abbreviation = String.Empty;
-		private string _longName = String.Empty;
+		private readonly string _abbreviation = String.Empty;
+		private readonly string _longName = String.Empty;
 
 		public string Abbreviation { get { return this._abbreviation; } }
 		public string LongName { get { return this._longName; } }
