@@ -60,8 +60,8 @@ jobs:
     #    uses a compiled language
 
     - name: Build
-    - run: |
-      dotnet build
+      run: |
+        dotnet build
     #   make bootstrap
     #   make release
 
