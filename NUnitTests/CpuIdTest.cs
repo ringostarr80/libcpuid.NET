@@ -8,8 +8,8 @@ namespace LibCpuId {
 		[Test()]
 		public void CpuIdTestCase() {
 			var libCpuId = new LibCpuId();
-			Assert.IsNotEmpty(libCpuId.VendorId);
-			Assert.IsNotEmpty(libCpuId.ProcessorBrandString);
+			Assert.That(libCpuId.VendorId != string.Empty);
+			Assert.That(libCpuId.ProcessorBrandString != string.Empty);
 		}
 	}
 }
