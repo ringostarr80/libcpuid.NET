@@ -30,7 +30,5 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build
-    - name: List files
-      run: ls -R
     - name: Test
       run: dotnet test --verbosity normal
