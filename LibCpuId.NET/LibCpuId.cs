@@ -467,7 +467,7 @@ namespace LibCpuId {
 		}
 	}
 
-	public class LibCpuId {
+	public partial class LibCpuId {
 		private readonly Dictionary<UInt32, CpuRegisters> _rawData = new();
 		private uint _cpuidLevel = 0;
 		private string _vendorId = String.Empty;
@@ -1077,7 +1077,7 @@ namespace LibCpuId {
 			return result;
 		}
 
-		[DllImport("libcpuid.so", EntryPoint="cpuid")]
-		private static extern CpuRegisters cpuid(UInt32 input);
+		[LibraryImport("libcpuid.so", EntryPoint ="cpuid")]
+		private static partial CpuRegisters cpuid(UInt32 input);
 	}
 }
